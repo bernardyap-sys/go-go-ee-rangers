@@ -4,7 +4,7 @@ export const blobStore = {
   async read(pathname) {
     const result = await get(pathname, { access: 'private', useCache: false });
     if (!result || result.statusCode !== 200) return null;
-    return { value: await new Response(result.stream).json(), etag: result.blob.etag };
+    return { value: await new Response(result.stream).json(), etag: result.blob.etag.replace(/^W\//, '') };
   },
   async write(pathname, value, etag = null) {
     return put(pathname, JSON.stringify(value), {

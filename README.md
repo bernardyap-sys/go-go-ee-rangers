@@ -2,6 +2,8 @@
 
 Open source class hub for announcements, schedule, learning resources, activities, and contact information. Licensed under [MIT](LICENSE).
 
+The UNIMAS logo in `assets/` is a university mark and is not covered by the MIT software license.
+
 Node.js 24+ is required.
 
 Set a private admin password, then start the server:

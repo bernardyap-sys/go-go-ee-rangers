@@ -16,7 +16,21 @@
       "created_at": "2026-10-09 05:23:21"
     }
   ],
-  "schedule": [],
+  "schedule": [
+    { "id": 2, "section": "schedule", "title": "KNR1773", "description": "", "day": 0, "start_time": "08:00", "end_time": "10:00", "location": "FK, TR6", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 3, "section": "schedule", "title": "KNR1793", "description": "", "day": 0, "start_time": "12:00", "end_time": "14:00", "location": "FK, CAE Lab", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 4, "section": "schedule", "title": "KNR1802", "description": "", "day": 0, "start_time": "14:00", "end_time": "16:00", "location": "FK, Control Lab", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 5, "section": "schedule", "title": "KNR1783", "description": "", "day": 0, "start_time": "16:00", "end_time": "18:00", "location": "FK, Online", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 6, "section": "schedule", "title": "KNR1783", "description": "", "day": 1, "start_time": "08:00", "end_time": "10:00", "location": "FK, Online", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 7, "section": "schedule", "title": "KNR1793", "description": "", "day": 1, "start_time": "10:00", "end_time": "12:00", "location": "FK, Online", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 8, "section": "schedule", "title": "KNR1753", "description": "", "day": 1, "start_time": "12:00", "end_time": "14:00", "location": "FK, Online", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 9, "section": "schedule", "title": "MPU3382", "description": "", "day": 1, "start_time": "19:00", "end_time": "21:00", "location": "FK, Online", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 10, "section": "schedule", "title": "PBI1092", "description": "", "day": 2, "start_time": "08:00", "end_time": "10:00", "location": "FPBK, Online 9", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 11, "section": "schedule", "title": "KNR1753", "description": "", "day": 2, "start_time": "16:00", "end_time": "18:00", "location": "FK, Online", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 12, "section": "schedule", "title": "PPD1041", "description": "", "day": 3, "start_time": "14:00", "end_time": "16:00", "location": "FK, Graphic Lab", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 13, "section": "schedule", "title": "KNR1773", "description": "", "day": 4, "start_time": "08:00", "end_time": "10:00", "location": "FK, TR6", "url": null, "category": null, "date": null, "pinned": false },
+    { "id": 14, "section": "schedule", "title": "KNR1802", "description": "", "day": 4, "start_time": "14:00", "end_time": "16:00", "location": "FK, Control Lab", "url": null, "category": null, "date": null, "pinned": false }
+  ],
   "resources": [],
   "activities": [],
   "contact": "pls contact rara via WA group"

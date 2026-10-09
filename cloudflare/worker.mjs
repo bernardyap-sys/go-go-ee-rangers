@@ -44,7 +44,7 @@ function validateEntry(section, input) {
   if (section === 'announcements') {
     entry.pinned = input.pinned === true ? 1 : 0;
   } else if (section === 'schedule') {
-    if (!Number.isInteger(input.day) || input.day < 0 || input.day > 4) throw new HttpError(400, 'Day must be Monday through Friday.');
+    if (!Number.isInteger(input.day) || input.day < 0 || input.day > 5) throw new HttpError(400, 'Day must be Monday through Saturday.');
     entry.day = input.day;
     entry.start_time = validTime(input.start_time, 'Start time');
     entry.end_time = validTime(input.end_time, 'End time');

@@ -9,6 +9,7 @@ const STATIC_FILES = new Map([
   ['/', ['index.html', 'text/html; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+  ['/assets/unimas-engineering-logo.png', ['assets/unimas-engineering-logo.png', 'image/png']],
   ['/admin', ['admin.html', 'text/html; charset=utf-8']],
   ['/admin.css', ['admin.css', 'text/css; charset=utf-8']],
   ['/admin.js', ['admin.js', 'text/javascript; charset=utf-8']],
@@ -106,8 +107,8 @@ function validateEntry(section, input) {
   if (section === 'announcements') {
     entry.pinned = input.pinned === true ? 1 : 0;
   } else if (section === 'schedule') {
-    if (!Number.isInteger(input.day) || input.day < 0 || input.day > 4) {
-      throw new Error('Day must be Monday through Friday.');
+    if (!Number.isInteger(input.day) || input.day < 0 || input.day > 5) {
+      throw new Error('Day must be Monday through Saturday.');
     }
     entry.day = input.day;
     entry.start_time = validTime(input.start_time, 'Start time');
