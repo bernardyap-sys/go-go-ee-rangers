@@ -22,3 +22,4 @@
 @media(max-width:700px){.brand-logo{width:121px;height:40px}.brand-logo img{transform:translateX(-3px)}.brand-copy{display:none}}
 .schedule-days{grid-template-columns:repeat(6,minmax(0,1fr))}.schedule-day{justify-content:flex-start}
 @media(max-width:700px){.schedule-days{grid-template-columns:repeat(6,minmax(146px,1fr))}}
+.footer-logo{display:block;flex:none;width:121px;height:40px;overflow:hidden;background:#fff;border-radius:3px}.footer-logo img{display:block;width:auto;max-width:none;height:100%;transform:translateX(-3px)}.footer-brand:focus-visible{outline:2px solid var(--lime);outline-offset:4px}
