@@ -1,0 +1,11 @@
+data/
+dist/
+node_modules/
+.wrangler/
+.dev.vars
+.env
+.env.*
+.vercel/
+
+.vercel
+.env*

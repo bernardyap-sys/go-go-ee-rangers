@@ -1,0 +1,25 @@
+{
+  "name": "pkee-3-class-hub",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PKEE 3 class hub with local and Vercel backends",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node build-static.js",
+    "export:cloud": "node export-local-data.js",
+    "test": "node --test",
+    "dev:cloud": "node build-static.js && wrangler dev",
+    "deploy:cloud": "node build-static.js && wrangler deploy",
+    "deploy:vercel": "vercel deploy --prod"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "devDependencies": {
+    "vercel": "^63.0.1",
+    "wrangler": "^4.148.0"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.1"
+  }
+}

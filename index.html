@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f5f0" />
+    <meta name="description" content="A simple class hub for PKEE 3 students at UNIMAS." />
+    <title>Go Go EE Rangers | PKEE 3</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="PKEE 3, back to top">
+          <span class="brand-mark" aria-hidden="true">P<span>3</span></span>
+          <span class="brand-copy"><strong>PKEE 3</strong><small>CLASS HUB · UNIMAS</small></span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="site-nav" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+          <a href="#announcements">Announcements</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#resources">Resources</a>
+          <a href="#activities">Activities</a>
+          <a class="nav-contact" href="#contacts">Contacts <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> A SPACE FOR OUR CLASS</div>
+            <h1 id="hero-title">Go Go<br /><em>EE Rangers</em></h1>
+            <p class="hero-intro">A simple home for class announcements, your weekly schedule, learning materials, and activities.</p>
+            <div class="hero-actions">
+              <a class="button button-dark" href="#announcements">Explore the hub <span aria-hidden="true">↗</span></a>
+              <a class="text-link" href="#schedule">View schedule <span aria-hidden="true">↓</span></a>
+            </div>
+            <div class="hero-footnote"><span class="status-dot"></span> Made for PKEE 3 students at UNIMAS</div>
+          </div>
+
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-orbit orbit-one"></div>
+            <div class="art-orbit orbit-two"></div>
+            <div class="art-card art-card-back">
+              <span class="art-card-label">STUDY SPACE</span>
+              <span class="art-card-line short"></span><span class="art-card-line"></span>
+            </div>
+            <div class="art-card art-card-front">
+              <div class="art-card-top"><span>CLASS HUB</span><span>01 / 03</span></div>
+              <div class="art-sun"><span></span></div>
+              <div class="art-card-bottom"><strong>Learn.<br />Connect.<br />Grow.</strong><span class="art-arrow">↗</span></div>
+            </div>
+            <div class="art-sticker">PKEE<br />3</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="ticker" aria-hidden="true"><div class="shell ticker-inner"><span>STAY INFORMED</span><i></i><span>STAY CONNECTED</span><i></i><span>KEEP LEARNING</span><i></i><span>MAKE IT COUNT</span></div></div>
+
+      <section class="section announcements-section" id="announcements" aria-labelledby="announcements-title">
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="section-number">01 / NOTICE BOARD</p><h2 id="announcements-title">Announcements<span class="period">.</span></h2></div>
+            <p>The latest class updates will live here, so everyone can stay on the same page.</p>
+          </div>
+          <div class="announcement-layout">
+            <article class="announcement-feature">
+              <div class="card-meta"><span class="tag tag-light">CLASS UPDATE</span><span>PINNED NOTE</span></div>
+              <div class="announcement-feature-body"><span class="oversized-star" aria-hidden="true">✳</span><h3 id="featured-announcement-title">Nothing to miss,<br />everything in reach.</h3><p id="featured-announcement-description">Announcements will appear here once class details are shared.</p></div>
+              <div class="announcement-feature-footer"><span>CHECK BACK FOR UPDATES</span><span aria-hidden="true">↗</span></div>
+            </article>
+            <aside class="announcement-aside" aria-label="Notice board information">
+              <div class="aside-icon" aria-hidden="true">✦</div>
+              <p class="aside-label">A LITTLE REMINDER</p>
+              <h3>Stay in the loop.</h3>
+              <p>Look here for important notices, deadlines, and changes to class plans.</p>
+              <a href="#contacts">Need to ask something? <span aria-hidden="true">↗</span></a>
+            </aside>
+          </div>
+          <div class="announcement-list" id="announcement-list" hidden aria-label="More announcements"></div>
+        </div>
+      </section>
+
+      <section class="section schedule-section" id="schedule" aria-labelledby="schedule-title">
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="section-number">02 / YOUR WEEK</p><h2 id="schedule-title">Class schedule<span class="period">.</span></h2></div>
+            <p>A quick view of the week. Class times and venues can be added when confirmed.</p>
+          </div>
+          <div class="schedule-board">
+            <div class="schedule-board-top"><span>WEEKLY OVERVIEW</span><span class="schedule-icon" aria-hidden="true">↗</span></div>
+            <div class="schedule-days" role="list" aria-label="Weekdays">
+              <div class="schedule-day" role="listitem"><strong>MON</strong><span>Monday</span><div class="schedule-day-items"></div></div>
+              <div class="schedule-day" role="listitem"><strong>TUE</strong><span>Tuesday</span><div class="schedule-day-items"></div></div>
+              <div class="schedule-day" role="listitem"><strong>WED</strong><span>Wednesday</span><div class="schedule-day-items"></div></div>
+              <div class="schedule-day" role="listitem"><strong>THU</strong><span>Thursday</span><div class="schedule-day-items"></div></div>
+              <div class="schedule-day" role="listitem"><strong>FRI</strong><span>Friday</span><div class="schedule-day-items"></div></div>
+            </div>
+            <div class="schedule-empty" id="schedule-empty"><span class="empty-symbol" aria-hidden="true">＋</span><div><strong>Schedule details are on their way.</strong><p>Once the timetable is confirmed, sessions and locations can be shown here.</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section resources-section" id="resources" aria-labelledby="resources-title">
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="section-number">03 / STUDY TOOLS</p><h2 id="resources-title">Learning resources<span class="period">.</span></h2></div>
+            <p>One place to find the materials that support your learning.</p>
+          </div>
+          <div class="resource-grid" id="resource-grid">
+            <article class="resource-card"><span class="resource-index">01</span><div class="resource-symbol" aria-hidden="true">▤</div><div><h3>Lecture slides</h3><p>Presentation materials and class notes.</p></div><span class="coming-soon">COMING SOON</span></article>
+            <article class="resource-card"><span class="resource-index">02</span><div class="resource-symbol" aria-hidden="true">⌁</div><div><h3>Assignments</h3><p>Briefs, guides, and useful references.</p></div><span class="coming-soon">COMING SOON</span></article>
+            <article class="resource-card"><span class="resource-index">03</span><div class="resource-symbol" aria-hidden="true">◫</div><div><h3>Reading list</h3><p>Recommended articles and study material.</p></div><span class="coming-soon">COMING SOON</span></article>
+            <article class="resource-card"><span class="resource-index">04</span><div class="resource-symbol" aria-hidden="true">↗</div><div><h3>Useful links</h3><p>Quick access to helpful class links.</p></div><span class="coming-soon">COMING SOON</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section activities-section" id="activities" aria-labelledby="activities-title">
+        <div class="shell activities-grid">
+          <div class="activities-intro"><p class="section-number">04 / BEYOND THE NOTES</p><h2 id="activities-title">Curriculum<br />activities<span class="period">.</span></h2><p>Keep track of class projects, group work, and activities as the semester unfolds.</p><a class="text-link" href="#contacts">Have an activity to share? <span aria-hidden="true">↗</span></a></div>
+          <div class="activities-list" id="activities-list">
+            <div class="activity-row"><span>01</span><div><h3>Group work</h3><p>Collaborate with your classmates.</p></div><span class="activity-mark" aria-hidden="true">↗</span></div>
+            <div class="activity-row"><span>02</span><div><h3>Class projects</h3><p>Keep project information together.</p></div><span class="activity-mark" aria-hidden="true">↗</span></div>
+            <div class="activity-row"><span>03</span><div><h3>Shared moments</h3><p>See what’s happening beyond lessons.</p></div><span class="activity-mark" aria-hidden="true">↗</span></div>
+            <p class="activities-note">Activity details will be added when available.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contacts" aria-labelledby="contacts-title">
+        <div class="shell contact-grid">
+          <div><p class="section-number">05 / GET IN TOUCH</p><h2 id="contacts-title">Questions?<br /><em>Let's connect.</em></h2></div>
+          <div class="contact-card"><span class="contact-badge">CLASS CONTACT</span><p id="contact-text">pls contact rara via WA group</p><span class="contact-arrow" aria-hidden="true">↗</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand"><span class="brand-mark" aria-hidden="true">P<span>3</span></span><span>PKEE 3<br /><small>CLASS HUB · UNIMAS</small></span></div><p>A space to stay organised, together.</p><a href="#top">Back to top ↑</a></div></footer>
+  </body>
+</html>

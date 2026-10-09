@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Content Studio | PKEE 3</title>
+    <link rel="stylesheet" href="admin.css" />
+    <script defer src="admin.js"></script>
+  </head>
+  <body>
+    <header class="admin-header"><a href="/">P<span>3</span> <small>CLASS HUB</small></a><span>CONTENT STUDIO</span></header>
+    <main>
+      <section class="login-panel" id="login-panel" aria-labelledby="login-title">
+        <p class="eyebrow">PKEE 3 · ADMIN</p>
+        <h1 id="login-title">Welcome back.</h1>
+        <p>Log in to update your class page.</p>
+        <form id="login-form">
+          <label for="password">Admin password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <button type="submit">Log in <span aria-hidden="true">↗</span></button>
+        </form>
+        <p class="message" id="login-message" role="alert"></p>
+      </section>
+
+      <section class="dashboard" id="dashboard" hidden aria-labelledby="dashboard-title">
+        <div class="dashboard-heading"><div><p class="eyebrow">PKEE 3 · ADMIN</p><h1 id="dashboard-title">Manage class content.</h1><p>Changes appear on the class page as soon as you save them.</p></div><button class="logout" id="logout" type="button">Log out</button></div>
+        <nav class="admin-tabs" aria-label="Content sections">
+          <button type="button" data-section="announcements" class="active">Announcements</button>
+          <button type="button" data-section="schedule">Schedule</button>
+          <button type="button" data-section="resources">Resources</button>
+          <button type="button" data-section="activities">Activities</button>
+          <button type="button" data-section="contact">Contact</button>
+        </nav>
+        <p class="message" id="dashboard-message" role="status" aria-live="polite"></p>
+
+        <div class="admin-grid" id="entry-area">
+          <section class="panel"><h2 id="form-title">Add announcement</h2><form id="entry-form">
+            <label for="entry-title">Title</label><input id="entry-title" name="title" maxlength="120" required />
+            <label for="entry-description">Description</label><textarea id="entry-description" name="description" maxlength="2000" rows="5"></textarea>
+            <div data-for="announcements"><label class="checkbox"><input name="pinned" type="checkbox" /> Pin this announcement</label></div>
+            <div data-for="schedule"><label for="entry-day">Day</label><select id="entry-day" name="day"><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option></select><div class="field-pair"><div><label for="entry-start">Start time</label><input id="entry-start" name="start_time" type="time" /></div><div><label for="entry-end">End time</label><input id="entry-end" name="end_time" type="time" /></div></div><label for="entry-location">Location</label><input id="entry-location" name="location" maxlength="120" /></div>
+            <div data-for="resources"><label for="entry-category">Category</label><select id="entry-category" name="category"><option value="slides">Lecture slides</option><option value="assignment">Assignment</option><option value="reading">Reading</option><option value="link">Useful link</option></select><label for="entry-url">URL</label><input id="entry-url" name="url" type="url" placeholder="https://..." /></div>
+            <div data-for="activities"><label for="entry-date">Date (optional)</label><input id="entry-date" name="date" type="date" /></div>
+            <div class="form-actions"><button type="submit" id="save-entry">Save entry <span aria-hidden="true">↗</span></button><button type="button" class="secondary" id="cancel-edit" hidden>Cancel edit</button></div>
+          </form></section>
+          <section class="panel list-panel"><div class="list-heading"><h2 id="list-title">Announcements</h2><span id="entry-count">0 entries</span></div><div id="entry-list"></div></section>
+        </div>
+
+        <section class="panel contact-panel" id="contact-area" hidden><h2>Class contact</h2><p>This line appears in the contact section of the public page.</p><form id="contact-form"><label for="contact-text">Contact message</label><textarea id="contact-text" name="text" maxlength="300" rows="3" required></textarea><button type="submit">Save contact <span aria-hidden="true">↗</span></button></form></section>
+      </section>
+    </main>
+  </body>
+</html>
