@@ -54,6 +54,75 @@ function renderSchedule(items) {
   }
 }
 
+const progressKey = 'pkee3-task-progress-v1';
+const completedTasks = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(progressKey));
+    return new Set(Array.isArray(saved) ? saved.filter((value) => typeof value === 'string') : []);
+  } catch { return new Set(); }
+})();
+const dueFormatter = new Intl.DateTimeFormat('en-MY', {
+  timeZone: 'Asia/Kuala_Lumpur', day: 'numeric', month: 'short', year: 'numeric',
+  hour: '2-digit', minute: '2-digit', hour12: false,
+});
+let countdowns = [];
+
+function updateCountdowns() {
+  const now = Date.now();
+  for (const { dueAt, timer, value } of countdowns) {
+    const remaining = new Date(dueAt).valueOf() - now;
+    timer.classList.toggle('is-overdue', remaining <= 0);
+    timer.classList.toggle('is-urgent', remaining > 0 && remaining <= 86_400_000);
+    timer.querySelector('small').textContent = remaining <= 0 ? 'STATUS' : 'TIME LEFT';
+    if (remaining <= 0) { value.textContent = 'Deadline passed'; continue; }
+    const seconds = Math.ceil(remaining / 1000);
+    const days = Math.floor(seconds / 86_400);
+    const hours = Math.floor(seconds / 3_600) % 24;
+    const minutes = Math.floor(seconds / 60) % 60;
+    const rest = seconds % 60;
+    value.textContent = `${days ? `${days}d ` : ''}${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(rest).padStart(2, '0')}s`;
+  }
+}
+
+function renderTasks(items) {
+  if (!items?.length) return;
+  const list = document.querySelector('#task-list');
+  list.replaceChildren();
+  countdowns = [];
+  for (const item of items) {
+    const row = node('article', 'task-row');
+    const checkbox = node('input', 'task-check');
+    const key = `${item.id}:${item.created_at}`;
+    checkbox.type = 'checkbox';
+    checkbox.checked = completedTasks.has(key);
+    row.classList.toggle('is-done', checkbox.checked);
+    const updateLabel = () => checkbox.setAttribute('aria-label', `Mark ${item.title} ${checkbox.checked ? 'incomplete' : 'complete'} on this device`);
+    updateLabel();
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) completedTasks.add(key);
+      else completedTasks.delete(key);
+      row.classList.toggle('is-done', checkbox.checked);
+      updateLabel();
+      try { localStorage.setItem(progressKey, JSON.stringify([...completedTasks])); } catch {}
+    });
+    const copy = node('div', 'task-copy');
+    copy.append(node('h3', '', item.title));
+    if (item.description) copy.append(node('p', '', item.description));
+    const due = node('time', 'task-due', `Due ${dueFormatter.format(new Date(item.due_at))} MYT`);
+    due.dateTime = item.due_at;
+    copy.append(due);
+    const timer = node('div', 'task-timer');
+    const value = node('strong', 'task-countdown');
+    timer.append(node('small', '', 'TIME LEFT'), value);
+    row.append(checkbox, copy, timer);
+    list.append(row);
+    countdowns.push({ dueAt: item.due_at, timer, value });
+  }
+  updateCountdowns();
+}
+
+setInterval(updateCountdowns, 1000);
+
 function renderResources(items) {
   if (!items.length) return;
   const grid = document.querySelector('#resource-grid');
@@ -97,6 +166,7 @@ fetch('/api/content')
   .then((content) => {
     renderAnnouncements(content.announcements);
     renderSchedule(content.schedule);
+    renderTasks(content.tasks);
     renderResources(content.resources);
     renderActivities(content.activities);
     document.querySelector('#contact-text').textContent = content.contact;

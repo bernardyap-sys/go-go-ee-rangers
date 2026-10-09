@@ -2,8 +2,8 @@ const loginPanel = document.querySelector('#login-panel');
 const dashboard = document.querySelector('#dashboard');
 const entryForm = document.querySelector('#entry-form');
 const contactForm = document.querySelector('#contact-form');
-const sectionNames = { announcements: 'Announcements', schedule: 'Schedule', resources: 'Resources', activities: 'Activities' };
-const singularNames = { announcements: 'announcement', schedule: 'session', resources: 'resource', activities: 'activity' };
+const sectionNames = { announcements: 'Announcements', schedule: 'Schedule', tasks: 'To-dos', resources: 'Resources', activities: 'Activities' };
+const singularNames = { announcements: 'announcement', schedule: 'session', tasks: 'task', resources: 'resource', activities: 'activity' };
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 let section = 'announcements';
 let editingId = null;
@@ -63,6 +63,7 @@ function chooseSection(next) {
   });
   entryForm.elements.start_time.required = next === 'schedule';
   entryForm.elements.end_time.required = next === 'schedule';
+  entryForm.elements.due_at.required = next === 'tasks';
   entryForm.elements.url.required = next === 'resources';
   if (next !== 'contact') {
     document.querySelector('#list-title').textContent = sectionNames[next];
@@ -74,6 +75,7 @@ function chooseSection(next) {
 
 function details(item) {
   if (section === 'schedule') return `${weekdays[item.day]} · ${item.start_time}–${item.end_time}${item.location ? ` · ${item.location}` : ''}`;
+  if (section === 'tasks') return `Due ${item.due_at.replace('T', ' ').replace('+08:00', ' MYT')}`;
   if (section === 'resources') return `${item.category.toUpperCase()} · ${item.url}`;
   if (section === 'activities') return item.date || 'Date to be confirmed';
   return item.pinned ? 'PINNED ANNOUNCEMENT' : 'ANNOUNCEMENT';
@@ -133,6 +135,7 @@ function editEntry(item) {
   entryForm.elements.category.value = item.category || 'slides';
   entryForm.elements.url.value = item.url || '';
   entryForm.elements.date.value = item.date || '';
+  entryForm.elements.due_at.value = item.due_at?.slice(0, 16) || '';
   document.querySelector('#form-title').textContent = `Edit ${singularNames[section]}`;
   document.querySelector('#save-entry').firstChild.textContent = 'Save changes ';
   document.querySelector('#cancel-edit').hidden = false;
@@ -172,6 +175,7 @@ entryForm.addEventListener('submit', async (event) => {
   if (section === 'schedule') Object.assign(entry, { day: Number(fields.day.value), start_time: fields.start_time.value, end_time: fields.end_time.value, location: fields.location.value });
   if (section === 'resources') Object.assign(entry, { category: fields.category.value, url: fields.url.value });
   if (section === 'activities') entry.date = fields.date.value;
+  if (section === 'tasks') entry.due_at = `${fields.due_at.value}+08:00`;
   try {
     const url = editingId ? `/api/admin/${section}/${editingId}` : `/api/admin/${section}`;
     await request(url, { method: editingId ? 'PUT' : 'POST', body: JSON.stringify(entry) });

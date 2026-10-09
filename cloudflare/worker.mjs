@@ -33,6 +33,17 @@ function validTime(value, field) {
   return time;
 }
 
+function validDueAt(value) {
+  const dueAt = text(value, 'Due date and time', 22);
+  const parsed = new Date(dueAt);
+  if (!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d\+08:00$/.test(dueAt)
+    || Number.isNaN(parsed.valueOf())
+    || new Date(parsed.valueOf() + 8 * 60 * 60_000).toISOString().slice(0, 16) !== dueAt.slice(0, 16)) {
+    throw new HttpError(400, 'Due date and time must be a valid Malaysia time.');
+  }
+  return dueAt;
+}
+
 function validateEntry(section, input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new HttpError(400, 'Invalid entry.');
   const entry = {
@@ -60,6 +71,8 @@ function validateEntry(section, input) {
     entry.url = parsed.href;
   } else if (section === 'activities') {
     entry.date = validDate(input.date);
+  } else if (section === 'tasks') {
+    entry.due_at = validDueAt(input.due_at);
   }
   return entry;
 }
@@ -116,7 +129,7 @@ async function sessionFor(request, db) {
 }
 
 async function publicContent(db) {
-  const result = { announcements: [], schedule: [], resources: [], activities: [], contact: '' };
+  const result = { announcements: [], schedule: [], tasks: [], resources: [], activities: [], contact: '' };
   const rows = (await db.prepare('SELECT * FROM entries ORDER BY id DESC').all()).results;
   for (const row of rows) {
     row.pinned = Boolean(row.pinned);
@@ -124,6 +137,7 @@ async function publicContent(db) {
   }
   result.announcements.sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.id - a.id);
   result.schedule.sort((a, b) => a.day - b.day || a.start_time.localeCompare(b.start_time));
+  result.tasks = (await db.prepare('SELECT * FROM tasks ORDER BY due_at, id').all()).results;
   result.activities.sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999') || b.id - a.id);
   result.contact = (await db.prepare('SELECT value FROM settings WHERE key=?').bind('contact_text').first())?.value || 'pls contact rara via WA group';
   return result;
@@ -168,12 +182,17 @@ async function admin(request, env, pathname) {
     await env.DB.prepare('UPDATE settings SET value=? WHERE key=?').bind(contact, 'contact_text').run();
     return json(200, { contact });
   }
-  const match = /^\/api\/admin\/(announcements|schedule|resources|activities)(?:\/(\d+))?$/.exec(pathname);
+  const match = /^\/api\/admin\/(announcements|schedule|tasks|resources|activities)(?:\/(\d+))?$/.exec(pathname);
   if (!match) throw new HttpError(404, 'Not found.');
   const section = match[1];
   const id = match[2] ? Number(match[2]) : null;
   if (method === 'POST' && !id) {
     const entry = validateEntry(section, await readJson(request));
+    if (section === 'tasks') {
+      const result = await env.DB.prepare('INSERT INTO tasks(title, description, due_at) VALUES (?, ?, ?)')
+        .bind(entry.title, entry.description, entry.due_at).run();
+      return json(201, { id: result.meta.last_row_id });
+    }
     const result = await env.DB.prepare(`INSERT INTO entries
       (section, title, description, day, start_time, end_time, location, url, category, date, pinned)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(section, entry.title, entry.description, entry.day,
@@ -182,6 +201,11 @@ async function admin(request, env, pathname) {
   }
   if (method === 'PUT' && id) {
     const entry = validateEntry(section, await readJson(request));
+    if (section === 'tasks') {
+      const result = await env.DB.prepare('UPDATE tasks SET title=?, description=?, due_at=? WHERE id=?')
+        .bind(entry.title, entry.description, entry.due_at, id).run();
+      return result.meta.changes ? json(200, { id }) : json(404, { error: 'Entry not found.' });
+    }
     const result = await env.DB.prepare(`UPDATE entries SET title=?, description=?, day=?, start_time=?, end_time=?,
       location=?, url=?, category=?, date=?, pinned=? WHERE id=? AND section=?`).bind(entry.title,
       entry.description, entry.day, entry.start_time, entry.end_time, entry.location, entry.url,
@@ -189,6 +213,10 @@ async function admin(request, env, pathname) {
     return result.meta.changes ? json(200, { id }) : json(404, { error: 'Entry not found.' });
   }
   if (method === 'DELETE' && id) {
+    if (section === 'tasks') {
+      const result = await env.DB.prepare('DELETE FROM tasks WHERE id=?').bind(id).run();
+      return result.meta.changes ? json(200, { ok: true }) : json(404, { error: 'Entry not found.' });
+    }
     const result = await env.DB.prepare('DELETE FROM entries WHERE id=? AND section=?').bind(id, section).run();
     return result.meta.changes ? json(200, { ok: true }) : json(404, { error: 'Entry not found.' });
   }

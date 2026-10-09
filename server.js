@@ -36,6 +36,14 @@ function openDatabase(databasePath) {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
     CREATE INDEX IF NOT EXISTS entries_section_idx ON entries(section);
+    CREATE TABLE IF NOT EXISTS tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      due_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS tasks_due_at_idx ON tasks(due_at);
     CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
   `);
   db.prepare('INSERT OR IGNORE INTO settings(key, value) VALUES (?, ?)')
@@ -95,6 +103,17 @@ function validTime(value, field) {
   return time;
 }
 
+function validDueAt(value) {
+  const dueAt = text(value, 'Due date and time', 22);
+  const parsed = new Date(dueAt);
+  if (!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d\+08:00$/.test(dueAt)
+    || Number.isNaN(parsed.valueOf())
+    || new Date(parsed.valueOf() + 8 * 60 * 60_000).toISOString().slice(0, 16) !== dueAt.slice(0, 16)) {
+    throw new Error('Due date and time must be a valid Malaysia time.');
+  }
+  return dueAt;
+}
+
 function validateEntry(section, input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Invalid entry.');
   const entry = {
@@ -127,6 +146,8 @@ function validateEntry(section, input) {
     entry.url = parsed.href;
   } else if (section === 'activities') {
     entry.date = validDate(input.date);
+  } else if (section === 'tasks') {
+    entry.due_at = validDueAt(input.due_at);
   }
   return entry;
 }
@@ -169,6 +190,7 @@ function createApp({ databasePath, adminPassword }) {
   const attempts = new Map();
   const selectPassword = db.prepare('SELECT value FROM settings WHERE key=?');
   const selectEntries = db.prepare('SELECT * FROM entries ORDER BY id DESC');
+  const selectTasks = db.prepare('SELECT * FROM tasks ORDER BY due_at, id');
   const insertEntry = db.prepare(`INSERT INTO entries
     (section, title, description, day, start_time, end_time, location, url, category, date, pinned)
     VALUES (@section, @title, @description, @day, @start_time, @end_time, @location, @url, @category, @date, @pinned)`);
@@ -176,9 +198,12 @@ function createApp({ databasePath, adminPassword }) {
     start_time=@start_time, end_time=@end_time, location=@location, url=@url,
     category=@category, date=@date, pinned=@pinned WHERE id=@id AND section=@section`);
   const deleteEntry = db.prepare('DELETE FROM entries WHERE id=? AND section=?');
+  const insertTask = db.prepare('INSERT INTO tasks(title, description, due_at) VALUES (?, ?, ?)');
+  const updateTask = db.prepare('UPDATE tasks SET title=?, description=?, due_at=? WHERE id=?');
+  const deleteTask = db.prepare('DELETE FROM tasks WHERE id=?');
 
   function publicContent() {
-    const result = { announcements: [], schedule: [], resources: [], activities: [], contact: '' };
+    const result = { announcements: [], schedule: [], tasks: selectTasks.all(), resources: [], activities: [], contact: '' };
     for (const row of selectEntries.all()) {
       row.pinned = Boolean(row.pinned);
       result[row.section].push(row);
@@ -252,7 +277,7 @@ function createApp({ databasePath, adminPassword }) {
           db.prepare('UPDATE settings SET value=? WHERE key=?').run(contact, 'contact_text');
           return sendJson(res, 200, { contact });
         }
-        const match = /^\/api\/admin\/(announcements|schedule|resources|activities)(?:\/(\d+))?$/.exec(pathname);
+        const match = /^\/api\/admin\/(announcements|schedule|tasks|resources|activities)(?:\/(\d+))?$/.exec(pathname);
         if (!match) return sendJson(res, 404, { error: 'Not found.' });
         const section = match[1];
         const id = match[2] ? Number(match[2]) : null;
@@ -260,18 +285,22 @@ function createApp({ databasePath, adminPassword }) {
           let entry;
           try { entry = validateEntry(section, await readJson(req)); }
           catch (error) { error.status ||= 400; throw error; }
-          const result = insertEntry.run(entry);
+          const result = section === 'tasks'
+            ? insertTask.run(entry.title, entry.description, entry.due_at)
+            : insertEntry.run(entry);
           return sendJson(res, 201, { id: Number(result.lastInsertRowid) });
         }
         if (method === 'PUT' && id) {
           let entry;
           try { entry = validateEntry(section, await readJson(req)); }
           catch (error) { error.status ||= 400; throw error; }
-          const result = updateEntry.run({ ...entry, id });
+          const result = section === 'tasks'
+            ? updateTask.run(entry.title, entry.description, entry.due_at, id)
+            : updateEntry.run({ ...entry, id });
           return sendJson(res, result.changes ? 200 : 404, result.changes ? { id } : { error: 'Entry not found.' });
         }
         if (method === 'DELETE' && id) {
-          const result = deleteEntry.run(id, section);
+          const result = section === 'tasks' ? deleteTask.run(id) : deleteEntry.run(id, section);
           return sendJson(res, result.changes ? 200 : 404, result.changes ? { ok: true } : { error: 'Entry not found.' });
         }
         return sendJson(res, 405, { error: 'Method not allowed.' });

@@ -28,6 +28,7 @@
         <nav class="admin-tabs" aria-label="Content sections">
           <button type="button" data-section="announcements" class="active">Announcements</button>
           <button type="button" data-section="schedule">Schedule</button>
+          <button type="button" data-section="tasks">To-dos</button>
           <button type="button" data-section="resources">Resources</button>
           <button type="button" data-section="activities">Activities</button>
           <button type="button" data-section="contact">Contact</button>
@@ -40,6 +41,7 @@
             <label for="entry-description">Description</label><textarea id="entry-description" name="description" maxlength="2000" rows="5"></textarea>
             <div data-for="announcements"><label class="checkbox"><input name="pinned" type="checkbox" /> Pin this announcement</label></div>
             <div data-for="schedule"><label for="entry-day">Day</label><select id="entry-day" name="day"><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option></select><div class="field-pair"><div><label for="entry-start">Start time</label><input id="entry-start" name="start_time" type="time" /></div><div><label for="entry-end">End time</label><input id="entry-end" name="end_time" type="time" /></div></div><label for="entry-location">Location</label><input id="entry-location" name="location" maxlength="120" /></div>
+            <div data-for="tasks"><label for="entry-due">Due date and time (Malaysia time)</label><input id="entry-due" name="due_at" type="datetime-local" /><small class="due-note">MYT · UTC+8</small></div>
             <div data-for="resources"><label for="entry-category">Category</label><select id="entry-category" name="category"><option value="slides">Lecture slides</option><option value="assignment">Assignment</option><option value="reading">Reading</option><option value="link">Useful link</option></select><label for="entry-url">URL</label><input id="entry-url" name="url" type="url" placeholder="https://..." /></div>
             <div data-for="activities"><label for="entry-date">Date (optional)</label><input id="entry-date" name="date" type="date" /></div>
             <div class="form-actions"><button type="submit" id="save-entry">Save entry <span aria-hidden="true">↗</span></button><button type="button" class="secondary" id="cancel-edit" hidden>Cancel edit</button></div>

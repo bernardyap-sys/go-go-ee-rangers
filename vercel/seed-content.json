@@ -31,6 +31,7 @@
     { "id": 13, "section": "schedule", "title": "KNR1773", "description": "", "day": 4, "start_time": "08:00", "end_time": "10:00", "location": "FK, TR6", "url": null, "category": null, "date": null, "pinned": false },
     { "id": 14, "section": "schedule", "title": "KNR1802", "description": "", "day": 4, "start_time": "14:00", "end_time": "16:00", "location": "FK, Control Lab", "url": null, "category": null, "date": null, "pinned": false }
   ],
+  "tasks": [],
   "resources": [],
   "activities": [],
   "contact": "pls contact rara via WA group"

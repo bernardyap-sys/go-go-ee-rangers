@@ -9,6 +9,7 @@ class HttpError extends Error {
 function sorted(content) {
   content.announcements.sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.id - a.id);
   content.schedule.sort((a, b) => a.day - b.day || a.start_time.localeCompare(b.start_time));
+  content.tasks.sort((a, b) => a.due_at.localeCompare(b.due_at) || a.id - b.id);
   content.resources.sort((a, b) => b.id - a.id);
   content.activities.sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999') || b.id - a.id);
   return content;
@@ -16,7 +17,9 @@ function sorted(content) {
 
 async function contentRecord(store) {
   const record = await store.read('content.json');
-  return record || { value: structuredClone(seed), etag: null };
+  const value = record?.value || structuredClone(seed);
+  value.tasks ??= [];
+  return { value, etag: record?.etag ?? null };
 }
 
 async function updateContent(store, change) {
@@ -75,14 +78,14 @@ async function admin(request, store, path) {
     await updateContent(store, (content) => { content.contact = contact; return { save: true }; });
     return json(200, { contact });
   }
-  const match = /^admin\/(announcements|schedule|resources|activities)(?:\/(\d+))?$/.exec(path);
+  const match = /^admin\/(announcements|schedule|tasks|resources|activities)(?:\/(\d+))?$/.exec(path);
   if (!match) throw new HttpError(404, 'Not found.');
   const [, section, rawId] = match;
   const id = rawId ? Number(rawId) : null;
   if (request.method === 'POST' && !id) {
     const entry = validateEntry(section, await readJson(request));
     const result = await updateContent(store, (content) => {
-      const nextId = Math.max(0, ...['announcements', 'schedule', 'resources', 'activities'].flatMap((name) => content[name].map((item) => item.id))) + 1;
+      const nextId = Math.max(0, ...['announcements', 'schedule', 'tasks', 'resources', 'activities'].flatMap((name) => content[name].map((item) => item.id))) + 1;
       content[section].push({ id: nextId, section, ...entry, pinned: Boolean(entry.pinned), created_at: new Date().toISOString() });
       return { save: true, id: nextId };
     });
@@ -116,7 +119,7 @@ export function createHandler(store = blobStore, password = () => process.env.AD
       try {
         const url = new URL(request.url);
         const path = url.searchParams.get('path');
-        if (!path || !/^(?:content|admin\/(?:login|logout|session|contact|announcements|schedule|resources|activities)(?:\/\d+)?)$/.test(path)) {
+        if (!path || !/^(?:content|admin\/(?:login|logout|session|contact|announcements|schedule|tasks|resources|activities)(?:\/\d+)?)$/.test(path)) {
           throw new HttpError(404, 'Not found.');
         }
         if (['POST', 'PUT', 'DELETE'].includes(request.method) && request.headers.has('origin')) {
